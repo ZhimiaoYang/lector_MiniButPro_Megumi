@@ -1,26 +1,3 @@
-# This file is a part of Lector, a Qt based ebook reader
-# Copyright (C) 2017-2019 BasioMeusPuga
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-# INSTRUCTIONS
-# Every parser is supposed to have the following methods.
-# Exceptions will be caught - but that's just bad practice
-# read_book() - Initialize book
-# generate_metadata() - For addition
-# generate_content() - For reading
-
 import io
 import os
 import sys
@@ -43,17 +20,14 @@ else:
 
 from PyQt5 import QtCore, QtGui
 from lector import database
-from lector.parsers.comicbooks import ParseCOMIC
 
 logger = logging.getLogger(__name__)
 
-sorter = {
-    'cbz': ParseCOMIC,
-    'cbr': ParseCOMIC}
+sorter = {}
 
 # Check what dependencies are installed
 # pymupdf - Optional
-mupdf_check = importlib.util.find_spec('fitz')
+mupdf_check = importlib.find_loader('fitz') is not None
 if mupdf_check:
     from lector.parsers.pdf import ParsePDF
     sorter['pdf'] = ParsePDF
@@ -62,18 +36,8 @@ else:
     print(error_string)
     logger.error(error_string)
 
-# djvu - Optional
-djvu_check = importlib.util.find_spec('djvu')
-if djvu_check:
-    from lector.parsers.djvu import ParseDJVU
-    sorter['djvu'] = ParseDJVU
-else:
-    error_string = 'djvulibre is not installed. Will be unable to load Djvu files.'
-    print(error_string)
-    logger.error(error_string)
-
 # markdown - Optional
-markdown_check = importlib.util.find_spec('markdown')
+markdown_check = importlib.find_loader('markdown') is not None
 if markdown_check:
     from lector.parsers.markdown import ParseMD
     sorter['md'] = ParseMD
@@ -83,22 +47,14 @@ else:
     logger.error(error_string)
 
 # python-lxml - Required for everything except comics
-lxml_check = importlib.util.find_spec('lxml')
-xmltodict_check = importlib.util.find_spec('xmltodict')
+lxml_check = importlib.find_loader('lxml') is not None
+xmltodict_check = importlib.find_loader('xmltodict') is not None
 if lxml_check and xmltodict_check:
     from lector.parsers.epub import ParseEPUB
-    from lector.parsers.mobi import ParseMOBI
-    from lector.parsers.fb2 import ParseFB2
 
     lxml_dependent = {
         'epub': ParseEPUB,
-        'mobi': ParseMOBI,
-        'azw': ParseMOBI,
-        'azw3': ParseMOBI,
-        'azw4': ParseMOBI,
-        'prc': ParseMOBI,
-        'fb2': ParseFB2,
-        'fb2.zip': ParseFB2}
+    }
     sorter.update(lxml_dependent)
 else:
     critical_sting = 'lxml / xmltodict is not installed. Only comics will load.'
@@ -106,7 +62,7 @@ else:
     logger.critical(critical_sting)
 
 # txt - Optional
-textile_check = importlib.util.find_spec('textile')
+textile_check = importlib.find_loader('textile') is not None
 if textile_check:
     from lector.parsers.txt import ParseTXT
     sorter['txt'] = ParseTXT

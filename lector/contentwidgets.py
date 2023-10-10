@@ -33,7 +33,6 @@ except ImportError:
 
 from PyQt5 import QtWidgets, QtGui, QtCore
 
-from lector.rarfile import rarfile
 from lector.threaded import BackGroundCacheRefill
 from lector.annotations import AnnotationPlacement
 
@@ -57,19 +56,8 @@ class PliantQGraphicsView(QtWidgets.QGraphicsView):
         self.filepath = filepath
         self.filetype = os.path.splitext(self.filepath)[1][1:]
 
-        if self.filetype == 'cbz':
-            self.book = zipfile.ZipFile(self.filepath)
-
-        elif self.filetype == 'cbr':
-            self.book = rarfile.RarFile(self.filepath)
-
-        elif self.filetype == 'pdf':
+        if self.filetype == 'pdf':
             self.book = fitz.open(self.filepath)
-
-        elif self.filetype == 'djvu':
-            self.book = djvu.decode.Context().new_document(
-                djvu.decode.FileURI(self.filepath))
-            self.book.decoding_job.wait()
 
         self.common_functions = PliantWidgetsCommonFunctions(
             self, self.main_window)
