@@ -478,10 +478,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
     def choose_bgimage(self):
         dialog_prompt = self._translate('Main_UI', 'Choose the background image')
-        ebooks_string = self._translate('Main_UI', 'Images')
-        # opened_files = QtWidgets.QFileDialog.getOpenFileNames(
-        #     self, dialog_prompt, self.settings['last_open_path'],
-        #     f'{ebooks_string}({self.available_parsers})')
         opened_files = QtWidgets.QFileDialog.getOpenFileName(self, dialog_prompt, self.settings['last_open_path'],
                                                              "Images (*.png)")
 
@@ -492,9 +488,6 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         self.libraryToolBar.reloadLibraryButton.setEnabled(False)
 
         self.settings['last_open_path'] = os.path.dirname(opened_files[0][0])
-        # self.statusBar.setVisible(True)
-        # self.sorterProgress.setVisible(True)
-        # self.statusMessage.setText(self._translate('Main_UI', 'Adding books...'))
 
         self.thread = BackGroundImageChoose(
             opened_files[0], self)
