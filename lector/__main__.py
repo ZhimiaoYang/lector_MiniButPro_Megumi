@@ -39,7 +39,7 @@ class MainUI(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
         # Set window icon
         self.setWindowIcon(
-            QtGui.QIcon(':/images/Lector.png'))
+            QtGui.QIcon('resources/raw/Megumi.png'))
 
         # Central Widget - Make borders disappear
         self.centralWidget().layout().setContentsMargins(0, 0, 0, 0)
